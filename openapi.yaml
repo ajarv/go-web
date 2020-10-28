@@ -1,0 +1,47 @@
+openapi: 3.0.3
+info: 
+  version: 1.0.0
+  title: Tags Api
+  description: This api provides ability to manage tagIds
+
+security:
+  - {}
+  - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT    # optional, arbitrary value for documentation purposes
+  schemas:
+    Tag:
+      required:
+        - tagId
+        - appId
+      properties:
+        tagId: { type: string ,example: "Aw23" }
+        appId: { type: string }
+    ErrorModel:
+      type: object
+      required: [code, message]
+      properties:
+        code: {type: integer}
+        message: {type: string}
+
+paths:
+  /tag/{tagId}:
+    get:
+      parameters:
+      - name: tagId
+        in: path
+        description: TagId to lookup
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: Tag Info
+          content:
+            application/json:
+              schema:
+                $ref:  "#/components/schemas/Tag"

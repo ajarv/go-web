@@ -2,27 +2,35 @@ package main
 
 import (
 	"flag"
-	"fmt"
-	"log"
 	"net/http"
 	"os"
-	"time"
 
-	"github.com/gorilla/mux"
+	"github.com/labstack/echo/v4"
 )
 
-// health handler
-func HealthHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, `{"status":"UP"}`)
-}
 func getEnv(key, fallback string) string {
 	if value, ok := os.LookupEnv(key); ok {
 		return value
 	}
 	return fallback
 }
+
+type healthStatus struct {
+	Status string `json:"status" xml:"status"`
+}
+
+func health(c echo.Context) error {
+	hs := &healthStatus{
+		Status: "Up"}
+	return c.JSON(http.StatusOK, hs)
+}
+func info(c echo.Context) error {
+	i := map[string]string{
+		"version": "1.0.0",
+		"desc":    "Sample Go App"}
+	return c.JSON(http.StatusOK, i)
+}
+
 func main() {
 	var host string
 	var port string
@@ -30,18 +38,11 @@ func main() {
 	flag.StringVar(&port, "port", getEnv("SERVICE_PORT", "8080"), "listen port")
 	flag.Parse()
 
-	r := mux.NewRouter()
-	r.HandleFunc("/health", HealthHandler)
-	http.Handle("/", r)
-
-	srv := &http.Server{
-		Handler: r,
-		Addr:    host + ":" + port,
-		// Good practice: enforce timeouts for servers you create!
-		WriteTimeout: 15 * time.Second,
-		ReadTimeout:  15 * time.Second,
-	}
-
-	fmt.Fprintf(os.Stdout, "Server listening HTTP %s:%s\n", host, port)
-	log.Fatal(srv.ListenAndServe())
+	e := echo.New()
+	e.GET("/", func(c echo.Context) error {
+		return c.String(http.StatusOK, "Hello, World!")
+	})
+	e.GET("/health", health)
+	e.GET("/info", info)
+	e.Logger.Fatal(e.Start(host + ":" + port))
 }
