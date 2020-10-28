@@ -4,6 +4,7 @@ import (
 	"flag"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 )
@@ -30,6 +31,23 @@ func info(c echo.Context) error {
 		"desc":    "Sample Go App"}
 	return c.JSON(http.StatusOK, i)
 }
+func environ(c echo.Context) error {
+	getenvironment := func(data []string, getkeyval func(item string) (key, val string)) map[string]string {
+		items := make(map[string]string)
+		for _, item := range data {
+			key, val := getkeyval(item)
+			items[key] = val
+		}
+		return items
+	}
+	environment := getenvironment(os.Environ(), func(item string) (key, val string) {
+		splits := strings.Split(item, "=")
+		key = splits[0]
+		val = splits[1]
+		return
+	})
+	return c.JSON(http.StatusOK, environment)
+}
 
 func main() {
 	var host string
@@ -44,5 +62,6 @@ func main() {
 	})
 	e.GET("/health", health)
 	e.GET("/info", info)
+	e.GET("/env", environ)
 	e.Logger.Fatal(e.Start(host + ":" + port))
 }
