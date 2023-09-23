@@ -25,11 +25,15 @@ func health(c echo.Context) error {
 		Status: "Up"}
 	return c.JSON(http.StatusOK, hs)
 }
+
+var uid string
+
 func info(c echo.Context) error {
 	i := map[string]string{
 		"version": "1.0.0",
-		"desc":    "Sample Go App"
-		"uid":uid}
+		"desc":    "Sample Go App",
+		"uid":     uid,
+	}
 	return c.JSON(http.StatusOK, i)
 }
 func reqinfo(c echo.Context) error {
