@@ -57,13 +57,13 @@ func environ(c echo.Context) error {
 		return
 	})
 	return c.JSON(http.StatusOK, environment)
-}
+}	
+var host,port,uid string
 
 func main() {
-	var host, port string
 	flag.StringVar(&host, "host", getEnv("LISTEN_ADDRESS", "0.0.0.0"), "listen host")
 	flag.StringVar(&port, "port", getEnv("SERVICE_PORT", "8080"), "listen port")
-	flag.StringVar(&uid, "uid", getEnv("UID", "-"), "Unique ID")
+	flag.StringVar(&uid, "port", getEnv("APP_UID", "Kinder"), "app uid")
 	flag.Parse()
 
 	e := echo.New()
