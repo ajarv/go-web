@@ -25,10 +25,15 @@ func health(c echo.Context) error {
 		Status: "Up"}
 	return c.JSON(http.StatusOK, hs)
 }
+
+var uid string
+
 func info(c echo.Context) error {
 	i := map[string]string{
 		"version": "1.0.0",
-		"desc":    "Sample Go App"}
+		"desc":    "Sample Go App",
+		"uid":     uid,
+	}
 	return c.JSON(http.StatusOK, i)
 }
 func reqinfo(c echo.Context) error {
@@ -55,10 +60,10 @@ func environ(c echo.Context) error {
 }
 
 func main() {
-	var host string
-	var port string
+	var host, port string
 	flag.StringVar(&host, "host", getEnv("LISTEN_ADDRESS", "0.0.0.0"), "listen host")
 	flag.StringVar(&port, "port", getEnv("SERVICE_PORT", "8080"), "listen port")
+	flag.StringVar(&uid, "uid", getEnv("UID", "-"), "Unique ID")
 	flag.Parse()
 
 	e := echo.New()

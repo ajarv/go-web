@@ -1,0 +1,9 @@
+services:
+  web:
+    build: .
+    environment:
+      - SERVICE_PORT=${INTERNAL_PORT:-8070}
+    ports:
+      - "${PORT}:${INTERNAL_PORT:-8070}"
+
+    

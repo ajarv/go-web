@@ -1,4 +1,4 @@
-FROM golang:1.15-alpine as stage1
+FROM golang:1.18-alpine as stage1
 ENV SRC_DIR=/go/src/github.com/ajarv/go-app
 
 RUN apk update && apk upgrade && \
