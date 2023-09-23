@@ -26,8 +26,6 @@ func health(c echo.Context) error {
 	return c.JSON(http.StatusOK, hs)
 }
 
-var uid string
-
 func info(c echo.Context) error {
 	i := map[string]string{
 		"version": "1.0.0",
@@ -57,13 +55,14 @@ func environ(c echo.Context) error {
 		return
 	})
 	return c.JSON(http.StatusOK, environment)
-}	
-var host,port,uid string
+}
+
+var host, port, uid string
 
 func main() {
 	flag.StringVar(&host, "host", getEnv("LISTEN_ADDRESS", "0.0.0.0"), "listen host")
 	flag.StringVar(&port, "port", getEnv("SERVICE_PORT", "8080"), "listen port")
-	flag.StringVar(&uid, "port", getEnv("APP_UID", "Kinder"), "app uid")
+	flag.StringVar(&uid, "uid", getEnv("APP_UID", "Kinder"), "app uid")
 	flag.Parse()
 
 	e := echo.New()
